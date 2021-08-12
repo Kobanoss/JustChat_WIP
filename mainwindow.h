@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cinttypes>
 #include <QString>
+#include <qudpsocket.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -38,12 +39,17 @@ private:
     uint8_t files_count;
     uint64_t package_size;
     uint64_t package_freq;
+    uint16_t port;
 
     void Set_Package_Size(uint64_t package_size_local);
     void Set_Package_Freq(uint64_t package_freq_local);
 
     void Set_Global_Vars();
     void Set_File_status();
+
+    void listen_Port();
+
+    QUdpSocket *listen_socket;
 
 
     Ui::MainWindow *ui;

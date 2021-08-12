@@ -15,15 +15,16 @@ UdpSender::~UdpSender() {
 
 
 void UdpSender:: test() {
-    qDebug() << "test";
+    qDebug() << ">>Start test";
     init_thread();
-    qDebug() << "testq";
+    qDebug() << ">>End test";
 }
 
 
 void UdpSender::init_thread() {
     udp_Socket = new QUdpSocket;
-    udp_Socket->bind(port);
+    auto datagramma = data_str.toLatin1();
+    udp_Socket->writeDatagram(datagramma, QHostAddress::Broadcast, port);
     // sender_socket->connect() TODO: Connect slot to send
-    qDebug() << ">Sending UDP data from port " << port << "\n";
+    qDebug() << ">Starting Broadcast from port " << port << "\n";
 }
