@@ -14,6 +14,17 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     ui->SizeSlider->setEnabled(true);
 
     Set_Global_Vars();
+
+    listen_socket = new QUdpSocket(this);
+    connect(listen_socket, &QUdpSocket::readyRead, [&](){
+       if (listen_socket->hasPendingDatagrams()) {
+           QByteArray datagram;
+           datagram.resize(listen_socket->pendingDatagramSize());
+           listen_socket->readDatagram(datagram.data(), datagram.size());
+           ui->ChatBrowser->append(QString(datagram)+"\n");
+           qDebug() << QString(datagram);
+       }
+    });
 }
 
 
@@ -26,6 +37,7 @@ void MainWindow::Set_Global_Vars() {
     package_size = 1;
     package_freq = 1;
     files_count = 0;
+    port = 10000;
 }
 
 
@@ -80,10 +92,9 @@ void MainWindow::on_SendButton_pressed() {
     Set_File_status();
 ////Testing
 ///
-    uint16_t port = 10000;
-    QString data = "test";
+
     QThread *sending_thread = new QThread();
-    UdpSender * send = new UdpSender(package_size, package_freq, port, data);
+    UdpSender * send = new UdpSender(package_size, package_freq, port, message);
     send->moveToThread(sending_thread);
     send->connect(sending_thread,SIGNAL(started()),send,SLOT(test()));
     sending_thread->start();
@@ -91,10 +102,15 @@ void MainWindow::on_SendButton_pressed() {
 
 
 void MainWindow::on_FileButton_pressed() {
+    listen_Port();
     files_count++;
     ui->LogBrowser->append("File added to message (total ="+QString::number(files_count)+")\n");
     Set_File_status();
 
+}
+
+void MainWindow::listen_Port() {
+    listen_socket->bind(port,QUdpSocket::ShareAddress);
 }
 
 
