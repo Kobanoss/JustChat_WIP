@@ -135,7 +135,10 @@ void UdpSender::Send_Package() {
 
 void UdpSender::resend_Message(QByteArray id, QHostAddress sender_ip) {
     sending_address = QHostAddress::Broadcast;
-    if (start_rand_id != id) return;
+    if (start_rand_id != id) {
+         emit send_Status(start_rand_id, true);
+         return;
+    }
     sending_address = sender_ip;
     Send_Data();
 }
