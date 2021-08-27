@@ -76,8 +76,6 @@ void UdpReceiver::init_Thread() {
                }
 
                if (system_type == "stop") {
-                   srand(time(NULL));
-                   message_id += rand()%2;
                    if (request_status && (messages_counter[start_message_id] == message_id)) {
                        udp_Socket->writeDatagram("180" + QByteArray::number(start_message_id), sender_ip, port);
                    }
