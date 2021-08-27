@@ -148,7 +148,6 @@ void MainWindow::Call_Sending_Thread(QString message) {
 void MainWindow::resend_Lost(QByteArray start_message_id, QHostAddress ip) {
     if (timer->isActive()) timer->stop();
 
-    qDebug() << "Ура?";
 
     lost_messages[start_message_id].append(ip);
     connect(this, &MainWindow::start_Resend,sending_threads[start_message_id], &UdpSender::resend_Message, Qt::QueuedConnection);
@@ -157,9 +156,10 @@ void MainWindow::resend_Lost(QByteArray start_message_id, QHostAddress ip) {
 }
 
 void MainWindow::call_Resend() {
-    qDebug() << "Ура???";
-    qDebug() << status_sending_threads;
-    qDebug() << lost_messages;
+
+    qDebug() << "Threads status: " << status_sending_threads;
+    qDebug() << "Lost undelivered messages: "<< lost_messages;
+
     for (auto id: status_sending_threads.keys()) {
         QMutableVectorIterator<QHostAddress> iter(lost_messages[id]);
         while(iter.hasNext()) {
